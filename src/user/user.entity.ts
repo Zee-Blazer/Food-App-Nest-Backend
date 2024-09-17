@@ -6,7 +6,7 @@ export class Manager {
     id: number;
 
     @Column()
-    isChef: string;
+    isChef: boolean;
 
     @Column({ unique: true })
     email: string;
