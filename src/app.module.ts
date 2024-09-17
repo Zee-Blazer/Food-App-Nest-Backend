@@ -6,6 +6,8 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm'; // TypeOrm
 import { ConfigModule } from '@nestjs/config'; // Configuration Module
 
+import { User } from './user/user.entity'; // User Entity
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -18,7 +20,7 @@ import { ConfigModule } from '@nestjs/config'; // Configuration Module
       username: 'postgres',
       password: process.env.DB_PASS,
       database: process.env.DB_NAME,
-      entities: [],
+      entities: [ User ],
       synchronize: true,
     }),
     UserModule],
