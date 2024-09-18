@@ -2,13 +2,17 @@ import { Injectable, NotAcceptableException, NotFoundException, UnauthorizedExce
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcrypt"; // Hashing password
+import { JwtService } from '@nestjs/jwt'; // Assigning tokens
 
 import { User } from './user.entity'; // User Entity
 
 @Injectable()
 export class UserService {
-    constructor(@InjectRepository(User) private repo: Repository<User>) {}
+    constructor(
+        @InjectRepository(User) private repo: Repository<User>,
+        private jwtService: JwtService
+    ) {}
 
     // Created the signup functionality
     async createNewUser(username: string, email: string, password: string) {
@@ -33,6 +37,8 @@ export class UserService {
 
         if(!isMatch) throw new UnauthorizedException("Check password and try again!");
 
-        return user;
+        const payload = { id: user.id, username: user.username };
+
+        return { access_token: await this.jwtService.signAsync(payload) };
     }
 }
