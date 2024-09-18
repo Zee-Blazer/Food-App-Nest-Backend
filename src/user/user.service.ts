@@ -11,8 +11,16 @@ export class UserService {
     constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
     async createNewUser(username: string, email: string, password: string) {
-        const hash = await bcrypt.hash(password, parseInt(process.env.SALT));
+        const strongPass = `${password}_${process.env.HASH_PASS}`;
+        const hash = await bcrypt.hash(strongPass, parseInt(process.env.SALT));
 
         return hash;
+    }
+
+    async loginUser(email: string, password: string) {
+        const strongPass = `${password}_${process.env.HASH_PASS}`;
+        const isMatch = await bcrypt.compare(strongPass, "$2b$10$CdE2rFc6yvq5LwEaq6DudukSrwiMh3HGCqMa9jUhSQgT0ULFHV9m.");
+
+        return isMatch;
     }
 }
