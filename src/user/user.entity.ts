@@ -5,7 +5,7 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({ default: false })
     isChef: boolean;
 
     @Column({ unique: true })
