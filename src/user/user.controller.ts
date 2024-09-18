@@ -1,6 +1,8 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dtos/create-user.dto';
+
+import { UserAuthGuard } from './user.guard'; // Guard for authorization | Middleware
 
 @Controller('user')
 export class UserController {
@@ -14,6 +16,12 @@ export class UserController {
     @Post('login')
     login(@Body() body: CreateUserDto){
         return this.userService.loginUser(body.email, body.password);
+    }
+
+    @UseGuards(UserAuthGuard)
+    @Get("profile")
+    userProfile(@Request() req) {
+        return req.user;
     }
 
 }
