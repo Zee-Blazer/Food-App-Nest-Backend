@@ -17,9 +17,9 @@ export class User {
     @Column({ unique: true })
     username: string;
 
-    @Column()
+    @Column({ nullable: true })
     bio: string;
 
-    @Column({ unique: true })
+    @Column({ unique: true, nullable: true })
     phone: string;
 }
