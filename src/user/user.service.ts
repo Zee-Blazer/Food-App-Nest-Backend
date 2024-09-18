@@ -29,16 +29,23 @@ export class UserService {
 
     // Created the Login functionality
     async loginUser(email: string, password: string) {
-        const user = await this.repo.findOneBy({ email });
 
+        // Query for a user with the given email
+        const user = await this.repo.findOneBy({ email }); 
+
+        // Confirms if user exists
         if(!user) throw new NotFoundException("User not found. Check email and try again!");
 
+        // Compare the password writen with the password in the DB
         const isMatch = await bcrypt.compare(password, user.password);
 
+        // Condition to responsed if it's not a match
         if(!isMatch) throw new UnauthorizedException("Check password and try again!");
 
+        // The data structure for the Token
         const payload = { id: user.id, username: user.username };
 
+        // return the access token to be stored
         return { access_token: await this.jwtService.signAsync(payload) };
     }
 }
