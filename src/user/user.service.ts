@@ -10,25 +10,26 @@ import { User } from './user.entity'; // User Entity
 export class UserService {
     constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
+    // Created the signup functionality
     async createNewUser(username: string, email: string, password: string) {
-        const checkUser = this.repo.findOneBy({ email });
+        const checkUser = await this.repo.findOneBy({ email });
+        const checkUsername = await this.repo.findOneBy({ username });
 
-        if(checkUser) throw new NotAcceptableException("Email already exists!");
+        if(checkUser || checkUsername) throw new NotAcceptableException("Email or Username already exists!");
 
-        const strongPass = `${password}_${process.env.HASH_PASS}`;
-        const hash = await bcrypt.hash(strongPass, parseInt(process.env.SALT));
+        const hash = await bcrypt.hash(password, parseInt(process.env.SALT));
         const user = this.repo.create({username, password: hash, email});
 
         return this.repo.save(user);
     }
 
+    // Created the Login functionality
     async loginUser(email: string, password: string) {
         const user = await this.repo.findOneBy({ email });
 
-        if(!user) throw new NotFoundException("Check email and try again!");
+        if(!user) throw new NotFoundException("User not found. Check email and try again!");
 
         const isMatch = await bcrypt.compare(password, user.password);
-        console.log()
 
         if(!isMatch) throw new UnauthorizedException("Check password and try again!");
 
