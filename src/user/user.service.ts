@@ -16,14 +16,21 @@ export class UserService {
 
     // Created the signup functionality
     async createNewUser(username: string, email: string, password: string) {
+
+        // Queries for the email and the username
         const checkUser = await this.repo.findOneBy({ email });
         const checkUsername = await this.repo.findOneBy({ username });
 
+        // Responds with error if the username or email already exists
         if(checkUser || checkUsername) throw new NotAcceptableException("Email or Username already exists!");
 
+        // Hashs the password with a given salt
         const hash = await bcrypt.hash(password, parseInt(process.env.SALT));
+
+        // Creates the user for storage
         const user = this.repo.create({username, password: hash, email});
 
+        // Saves the created user in the DB
         return this.repo.save(user);
     }
 
