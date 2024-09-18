@@ -10,5 +10,9 @@ import { User } from './user.entity'; // User Entity
 export class UserService {
     constructor(@InjectRepository(User) private repo: Repository<User>) {}
 
-    createNewUser(username: string, email: string, password: string) {}
+    async createNewUser(username: string, email: string, password: string) {
+        const hash = await bcrypt.hash(password, parseInt(process.env.SALT));
+
+        return hash;
+    }
 }
