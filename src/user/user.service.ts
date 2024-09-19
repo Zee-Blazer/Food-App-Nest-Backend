@@ -71,11 +71,16 @@ export class UserService {
     }
 
     async updateUserProfile(id: number, attrs: Partial<User>) {
+        // Search's for the user with the unique ID
         const user = await this.repo.findOneBy({ id });
 
+        // Throws an exception if the user doesn't exists
         if(!user) throw new NotFoundException("User not found!!");
+
+        // Create a new object model after updating the user record
         Object.assign(user, attrs);
 
+        // Saves the new stored inputs
         return this.repo.save(user);
     }
 
