@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm'; // TypeOrm
 import { ConfigModule } from '@nestjs/config'; // Configuration Module
 import { JwtModule } from '@nestjs/jwt'; // JWT for Tokens
+import { MailerModule } from '@nestjs-modules/mailer'; // Node Mailer for email
 
 import { User } from './user/user.entity'; // User Entity
 
@@ -28,6 +29,15 @@ import { User } from './user/user.entity'; // User Entity
       global: true,
       secret: process.env.JWT_TOKEN,
       signOptions: { expiresIn: '4h' },
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: process.env.EMAIL_HOST,
+        auth: {
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      },
     }),
     UserModule],
   controllers: [AppController],
