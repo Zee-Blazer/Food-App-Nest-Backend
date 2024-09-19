@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import * as bcrypt from "bcrypt"; // Hashing password
 import { JwtService } from '@nestjs/jwt'; // Assigning tokens
+import { MailerService } from '@nestjs-modules/mailer'; // Node Mailer to send email
 
 import { User } from './user.entity'; // User Entity
 
@@ -11,7 +12,8 @@ import { User } from './user.entity'; // User Entity
 export class UserService {
     constructor(
         @InjectRepository(User) private repo: Repository<User>,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private mailService: MailerService
     ) {}
 
     // Created the signup functionality
@@ -29,6 +31,13 @@ export class UserService {
 
         // Creates the user for storage
         const user = this.repo.create({username, password: hash, email});
+
+        this.mailService.sendMail({
+            from: 'The Smart Coder <the.smart.coder@gmail.com>',
+            to: 'ganiyu.bolaji.bo@gmail.com',
+            subject: `How to Send Emails with Nodemailer`,
+            text: "This is to indicate that you just registered an account with us",
+        })
 
         // Saves the created user in the DB
         return this.repo.save(user);
