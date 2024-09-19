@@ -1,4 +1,4 @@
-import { Injectable, NotAcceptableException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotAcceptableException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -32,12 +32,16 @@ export class UserService {
         // Creates the user for storage
         const user = this.repo.create({username, password: hash, email});
 
-        this.mailService.sendMail({
-            from: 'The Smart Coder <the.smart.coder@gmail.com>',
-            to: 'ganiyu.bolaji.bo@gmail.com',
-            subject: `How to Send Emails with Nodemailer`,
-            text: "This is to indicate that you just registered an account with us",
-        })
+        try{
+            this.mailService.sendMail({
+                from: 'The Smart Coder <the.smart.coder@gmail.com>',
+                to: 'ganiyu.bolaji.bo@gmail.com',
+                subject: `How to Send Emails with Nodemailer`,
+                text: "This is to indicate that you just registered an account with us",
+            })
+        } catch(err) {
+            throw new BadRequestException("Didn't go through!");
+        }
 
         // Saves the created user in the DB
         return this.repo.save(user);
