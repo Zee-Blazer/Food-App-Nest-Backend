@@ -32,6 +32,7 @@ export class UserService {
         // Creates the user for storage
         const user = this.repo.create({username, password: hash, email});
 
+        // Tester code for email notification
         try{
             this.mailService.sendMail({
                 from: 'The Smart Coder <the.smart.coder@gmail.com>',
@@ -68,4 +69,14 @@ export class UserService {
         // return the access token to be stored
         return { access_token: await this.jwtService.signAsync(payload) };
     }
+
+    async updateUserProfile(id: number, attrs: Partial<User>) {
+        const user = await this.repo.findOneBy({ id });
+
+        if(!user) throw new NotFoundException("User not found!!");
+        Object.assign(user, attrs);
+
+        return this.repo.save(user);
+    }
+
 }

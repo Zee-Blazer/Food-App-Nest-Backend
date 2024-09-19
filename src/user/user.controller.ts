@@ -1,8 +1,9 @@
-import { Body, Controller, Post, Get, UseGuards, Request } from '@nestjs/common';
+import { Body, Controller, Post, Get, UseGuards, Request, Patch, Param } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dtos/create-user.dto';
 
 import { UserAuthGuard } from './user.guard'; // Guard for authorization | Middleware
+import { CreateUserDto } from './dtos/create-user.dto'; // Create user DTO
+import { UpdateUserDto } from './dtos/update-user.dto'; // Update user DTO
 
 @Controller('user')
 export class UserController {
@@ -22,6 +23,11 @@ export class UserController {
     @Get("profile")
     userProfile(@Request() req) {
         return req.user;
+    }
+
+    @Patch('update/:id')
+    updateProfile(@Param("id") id: string, @Body() body: UpdateUserDto) {
+        return this.userService.updateUserProfile(parseInt(id), body);
     }
 
 }
